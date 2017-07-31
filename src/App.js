@@ -28,11 +28,17 @@ class App extends Component {
     this.handleDelete = this.handleDelete.bind(this)
   }
 
+  // Delete expense or revenue from list
   handleDelete(type, index) {
-    console.log(type, index)
+    // listType will be 'expenses' or 'revenue' depending on item delete
+    let listType = this.state[type]
+    this.setState({
+      [listType]: listType.splice(index, 1)
+    })
   }
 
   render() {
+    // create table rows from revenue state list
     let revenueTableData = this.state.revenue.map((item, index) => {
       return (
         <tr key={"revenue" + index}>
@@ -43,14 +49,14 @@ class App extends Component {
         </tr>
       )
     })
-
+    // create table rows from expenses state list
     let expensesTableData = this.state.expenses.map((expense, index) => {
       return (
         <tr key={"expense" + index}>
           <td>Expense {index + 1}</td>
           <td>${expense.oneTime}</td>
           <td>${expense.monthly}</td>
-          <td><Button onClick={() => this.handleDelete('expense', index)}>Delete</Button></td>
+          <td><Button onClick={() => this.handleDelete('expenses', index)}>Delete</Button></td>
         </tr>
       )
     })
@@ -58,6 +64,7 @@ class App extends Component {
     return (
       <div>
         <h1 className="text-center">ROI Calculator</h1>
+        
         <div className="roi-tables">
           <table className="revenue-table">
             <thead>
