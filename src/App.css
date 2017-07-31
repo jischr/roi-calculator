@@ -1,0 +1,13 @@
+.roi-tables {
+
+}
+
+.expenses-table, .revenue-table {
+  margin-bottom: 3em;
+}
+.expenses-table th, .revenue-table th, {
+  width: 10em;
+}
+.expenses-table td, .revenue-table td {
+  width: 10em 
+}
