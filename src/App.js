@@ -9,7 +9,7 @@ import './App.css';
 class App extends Component {
   constructor() {
     super()
-
+    // "seed" data initially
     this.state = {
       revenue: [
       {
@@ -51,7 +51,7 @@ class App extends Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
 
-    // Controlled Form Element functions
+    // controlled form elements functions
     this.handleTypeChange = this.handleTypeChange.bind(this)
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleOneTimeChange = this.handleOneTimeChange.bind(this)
@@ -62,7 +62,7 @@ class App extends Component {
   handleDelete(type, index) {
     // listType will be 'expenses' or 'revenue' depending on item delete
     let listType = this.state[type]
-    // recalculate totals
+    // recalculate and set totals in state
     if (type === 'expenses') {
       this.setState({
         oneTimeExpense: this.state.oneTimeExpense - this.state.expenses[index]['oneTime'],
@@ -80,6 +80,7 @@ class App extends Component {
     })
   }
 
+  // controlled form elements, watch changes
   handleTypeChange(e) {
     this.setState({
       newType: e.target.value
@@ -102,6 +103,7 @@ class App extends Component {
     })
   }
 
+  // add new expense or revenue
   handleAdd(e) {
     e.preventDefault()
     // handle form errors
@@ -110,18 +112,20 @@ class App extends Component {
         error: true
       })
     }
+    // if there are no form errors, add accordingly
     else {
       // typeOfAmount will be either 'expenses' or 'revenue'
       let typeOfAmount = this.state.newType
       let monthly = typeOfAmount === 'expenses' ? 'monthlyExpense' : 'monthlyRevenue'
       let oneTime = typeOfAmount === 'expenses' ? 'oneTimeExpense' : 'oneTimeRevenue'
-      // state array of revenues or expenses
+      // grab state array of revenues or expenses
       let items = this.state[typeOfAmount]
       items.push({
         name: this.state.newName,
         oneTime:this.state.newOneTime,
         monthly: this.state.newMonthly
       })
+      // set state with new totals, items array, get rid of any errors displaying
       this.setState({
         error: false,
         [typeOfAmount]: items,
@@ -165,8 +169,10 @@ class App extends Component {
     let totalExpense = this.state.oneTimeExpense + (this.state.monthlyExpense * 12)
     let monthlyContributionProfit = this.state.monthlyRevenue - this.state.monthlyExpense
     let totalContributionProfit = totalRevenue - totalExpense
-    let contributionMargin = (totalContributionProfit / totalRevenue * 100).toFixed(0)
-    let capitalROI = ((this.state.oneTimeExpense - this.state.oneTimeRevenue) / monthlyContributionProfit).toFixed(1)
+
+    let contributionMargin = totalRevenue !== 0 ? (totalContributionProfit / totalRevenue * 100).toFixed(0) : 0
+
+    let capitalROI = (totalRevenue === 0 && totalExpense === 0) ? 0 : ((this.state.oneTimeExpense - this.state.oneTimeRevenue) / monthlyContributionProfit).toFixed(1)
 
     return (
       <div>
@@ -226,6 +232,9 @@ class App extends Component {
           <table className="revenue-table">
             <thead>
               <tr>
+                <th>Revenue</th>
+              </tr>
+              <tr>
                 <th></th>
                 <th>One-Time</th>
                 <th>Monthly</th>
@@ -239,6 +248,9 @@ class App extends Component {
           {/* Expenses Table */}
           <table className="expenses-table">
             <thead>
+              <tr>
+                <th>Expenses</th>
+              </tr>
               <tr>
                 <th></th>
                 <th>One-Time</th>
@@ -276,8 +288,8 @@ class App extends Component {
               <tr>
                 <td>Contribution Profit</td>
                 <td></td>
-                <td>${monthlyContributionProfit.toFixed(2)}</td>
-                <td>${totalContributionProfit.toFixed(2)}</td>
+                <td>${ monthlyContributionProfit.toFixed(2)}</td>
+                <td>${ totalContributionProfit.toFixed(2)}</td>
               </tr>
               <tr>
                 <td>Contribution Margin</td>
