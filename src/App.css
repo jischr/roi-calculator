@@ -1,5 +1,13 @@
-.roi-tables {
+.addExpenseOrRevenueForm {
+  padding-top: 3em;
+}
 
+.roi-tables {
+  padding-top: 3em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .expenses-table, .revenue-table, .totals-table {

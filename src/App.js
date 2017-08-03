@@ -172,7 +172,7 @@ class App extends Component {
       <div>
         <h1 className="text-center">ROI Calculator</h1>
         {/* Add new expense or revenue form */}
-        <form onSubmit={this.handleAdd}>
+        <form className="addExpenseOrRevenueForm" onSubmit={this.handleAdd}>
           <Row>
             <Col sm={2} smOffset={1}>
               <FormControl
@@ -221,8 +221,8 @@ class App extends Component {
         { this.state.error &&
           <h4 className="error text-center">Please fill out all fields</h4>
         }
-        {/* Revenue Table */}
         <div className="roi-tables">
+          {/* Revenue Table */}
           <table className="revenue-table">
             <thead>
               <tr>
