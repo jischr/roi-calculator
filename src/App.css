@@ -11,3 +11,7 @@
 .expenses-table td, .revenue-table td, .totals-table td {
   width: 100px
 }
+
+.error {
+  color: red;
+}

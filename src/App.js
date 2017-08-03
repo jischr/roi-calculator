@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Button,
+  FormControl } from 'react-bootstrap'
 import './App.css';
 
 class App extends Component {
@@ -37,8 +41,21 @@ class App extends Component {
       oneTimeExpense: 700,
       monthlyRevenue: 160,
       monthlyExpense: 60,
+      newType: '',
+      newName: '',
+      newOneTime: '',
+      newMonthly: '',
+      error: false
     }
+
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleAdd = this.handleAdd.bind(this)
+
+    // Controlled Form Element functions
+    this.handleTypeChange = this.handleTypeChange.bind(this)
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleOneTimeChange = this.handleOneTimeChange.bind(this)
+    this.handleMonthlyChange = this.handleMonthlyChange.bind(this)
   }
 
   // Delete expense or revenue from list
@@ -63,14 +80,70 @@ class App extends Component {
     })
   }
 
+  handleTypeChange(e) {
+    this.setState({
+      newType: e.target.value
+    })
+  }
+  handleNameChange(e) {
+    this.setState({
+      newName: e.target.value
+    })
+  }
+
+  handleMonthlyChange(e) {
+    this.setState({
+      newMonthly: Number(e.target.value)
+    })
+  }
+  handleOneTimeChange(e) {
+    this.setState({
+      newOneTime: Number(e.target.value)
+    })
+  }
+
+  handleAdd(e) {
+    e.preventDefault()
+    // handle form errors
+    if (!this.state.newType || !this.state.newName || !this.state.newMonthly || !this.state.newOneTime) {
+      this.setState({
+        error: true
+      })
+    }
+    else {
+      // typeOfAmount will be either 'expenses' or 'revenue'
+      let typeOfAmount = this.state.newType
+      let monthly = typeOfAmount === 'expenses' ? 'monthlyExpense' : 'monthlyRevenue'
+      let oneTime = typeOfAmount === 'expenses' ? 'oneTimeExpense' : 'oneTimeRevenue'
+      // state array of revenues or expenses
+      let items = this.state[typeOfAmount]
+      items.push({
+        name: this.state.newName,
+        oneTime:this.state.newOneTime,
+        monthly: this.state.newMonthly
+      })
+      this.setState({
+        error: false,
+        [typeOfAmount]: items,
+        [monthly]: this.state[monthly] + this.state.newMonthly,
+        [oneTime]: this.state[oneTime] + this.state.newOneTime,
+        newName: '',
+        newMonthly: '',
+        newOneTime: '',
+        newType: ''
+      })
+      // clear values
+    }
+  }
+
   render() {
     // create table rows from revenue state list
     let revenueTableData = this.state.revenue.map((item, index) => {
       return (
         <tr key={"revenue" + index}>
           <td>{item.name}</td>
-          <td>${item.oneTime}</td>
-          <td>${item.monthly}</td>
+          <td>${item.oneTime.toFixed(2)}</td>
+          <td>${item.monthly.toFixed(2)}</td>
           <td><Button onClick={() => this.handleDelete('revenue', index)}>Delete</Button></td>
         </tr>
       )
@@ -98,8 +171,58 @@ class App extends Component {
     return (
       <div>
         <h1 className="text-center">ROI Calculator</h1>
+        {/* Add new expense or revenue form */}
+        <form onSubmit={this.handleAdd}>
+          <Row>
+            <Col sm={2} smOffset={1}>
+              <FormControl
+                componentClass="select"
+                onChange = {this.handleTypeChange}
+                value={this.state.newType ? this.state.newType : 'choose'}>
+                <option value="choose" disabled={true}>Select Type</option>
+                <option value="revenue">Revenue</option>
+                <option value="expenses">Expense</option>
+              </FormControl>
+            </Col>
+            <Col sm={3}>
+              <FormControl
+                type="text"
+                placeholder="Name"
+                onChange = {this.handleNameChange}
+                value={this.state.newName ? this.state.newName : ''}
+              />
+            </Col>
+            <Col sm={2}>
+              <FormControl
+                type="number"
+                placeholder="One-Time"
+                onChange = {this.handleOneTimeChange}
+                step="0.01"
+                value={this.state.newOneTime ? this.state.newOneTime : ''}
+              />
+            </Col>
+            <Col sm={2}>
+              <FormControl
+                type="number"
+                placeholder="Monthly"
+                onChange = {this.handleMonthlyChange}
+                step="0.01"
+                value={this.state.newMonthly ? this.state.newMonthly : ''}
+              />
+            </Col>
+            <Col sm={1}>
+              <Button type="submit">
+                Add
+              </Button>
+            </Col>
+          </Row>
+        </form>
+        {/* form errors */}
+        { this.state.error &&
+          <h4 className="error text-center">Please fill out all fields</h4>
+        }
+        {/* Revenue Table */}
         <div className="roi-tables">
-          {/* Revenue Table */}
           <table className="revenue-table">
             <thead>
               <tr>
@@ -150,8 +273,6 @@ class App extends Component {
                 <td>${(this.state.monthlyExpense).toFixed(2)}</td>
                 <td>${totalExpense.toFixed(2)}</td>
               </tr>
-
-              <br/>
               <tr>
                 <td>Contribution Profit</td>
                 <td></td>
