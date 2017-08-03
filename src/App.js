@@ -127,12 +127,12 @@ class App extends Component {
         [typeOfAmount]: items,
         [monthly]: this.state[monthly] + this.state.newMonthly,
         [oneTime]: this.state[oneTime] + this.state.newOneTime,
+        //  Clear values in form
         newName: '',
         newMonthly: '',
         newOneTime: '',
         newType: ''
       })
-      // clear values
     }
   }
 
