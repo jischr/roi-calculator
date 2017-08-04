@@ -60,7 +60,7 @@ class App extends Component {
 
   // Delete expense or revenue from list
   handleDelete(type, index) {
-    // listType will be 'expenses' or 'revenue' depending on item delete
+    // listType will be 'expenses' or 'revenue' depending on item to delete
     let listType = this.state[type]
     // recalculate and set totals in state
     if (type === 'expenses') {
@@ -69,18 +69,19 @@ class App extends Component {
         monthlyExpense: this.state.monthlyExpense - this.state.expenses[index]['monthly'],
       })
     } else {
+      // for revenue
       this.setState({
         oneTimeRevenue: this.state.oneTimeRevenue - this.state.revenue[index]['oneTime'],
         monthlyRevenue: this.state.monthlyRevenue - this.state.revenue[index]['monthly'],
       })
     }
-    // remove list item from state
+    // remove list item from state array
     this.setState({
       [listType]: listType.splice(index, 1),
     })
   }
 
-  // controlled form elements, watch changes
+  // controlled form elements, watch for changes
   handleTypeChange(e) {
     this.setState({
       newType: e.target.value
@@ -125,7 +126,7 @@ class App extends Component {
         oneTime:this.state.newOneTime,
         monthly: this.state.newMonthly
       })
-      // set state with new totals, items array, get rid of any errors displaying
+      // set state with new totals and items array, clear errors displaying and form contents
       this.setState({
         error: false,
         [typeOfAmount]: items,
@@ -171,26 +172,27 @@ class App extends Component {
     let totalContributionProfit = totalRevenue - totalExpense
     // handle case where totalRevenue is 0 (to avoid -Infinity and NaN)
     let contributionMargin = totalRevenue !== 0 ? (totalContributionProfit / totalRevenue * 100).toFixed(0) : 0
-    // handle case where totalExpense is 0 (to avoid NaN)
-    let capitalROI = (totalExpense === 0) ? 0 : ((this.state.oneTimeExpense - this.state.oneTimeRevenue) / monthlyContributionProfit).toFixed(1)
+    // handle case where totalExpense and totalRevenue are 0 (to avoid NaN)
+    let capitalROI = (totalExpense === 0 && totalRevenue === 0) ? 0 : ((this.state.oneTimeExpense - this.state.oneTimeRevenue) / monthlyContributionProfit).toFixed(1)
 
     return (
       <div>
         <h1 className="text-center">ROI Calculator</h1>
         {/* Add new expense or revenue form */}
         <form className="addExpenseOrRevenueForm" onSubmit={this.handleAdd}>
-          <Row>
-            <Col sm={2} smOffset={1}>
+          <Row className="input-field">
+            <Col sm={2} smOffset={1} className="input-field">
               <FormControl
                 componentClass="select"
                 onChange = {this.handleTypeChange}
-                value={this.state.newType ? this.state.newType : 'choose'}>
+                value={this.state.newType ? this.state.newType : 'choose'}
+                >
                 <option value="choose" disabled={true}>Select Type</option>
                 <option value="revenue">Revenue</option>
                 <option value="expenses">Expense</option>
               </FormControl>
             </Col>
-            <Col sm={3}>
+            <Col sm={3} className="input-field">
               <FormControl
                 type="text"
                 placeholder="Name"
@@ -198,7 +200,7 @@ class App extends Component {
                 value={this.state.newName ? this.state.newName : ''}
               />
             </Col>
-            <Col sm={2}>
+            <Col sm={2} className="input-field">
               <FormControl
                 type="number"
                 placeholder="One-Time"
@@ -207,7 +209,7 @@ class App extends Component {
                 value={this.state.newOneTime ? this.state.newOneTime : ''}
               />
             </Col>
-            <Col sm={2}>
+            <Col sm={2} className="input-field">
               <FormControl
                 type="number"
                 placeholder="Monthly"
@@ -216,7 +218,7 @@ class App extends Component {
                 value={this.state.newMonthly ? this.state.newMonthly : ''}
               />
             </Col>
-            <Col sm={1}>
+            <Col sm={1} className="add-form-button">
               <Button type="submit">
                 Add
               </Button>
