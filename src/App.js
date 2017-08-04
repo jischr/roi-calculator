@@ -3,7 +3,8 @@ import {
   Row,
   Col,
   Button,
-  FormControl } from 'react-bootstrap'
+  FormControl,
+  ControlLabel } from 'react-bootstrap'
 import './App.css';
 
 class App extends Component {
@@ -43,8 +44,8 @@ class App extends Component {
       monthlyExpense: 60,
       newType: '',
       newName: '',
-      newOneTime: '',
-      newMonthly: '',
+      newOneTime: 0,
+      newMonthly: 0,
       error: false
     }
 
@@ -108,7 +109,7 @@ class App extends Component {
   handleAdd(e) {
     e.preventDefault()
     // handle form errors
-    if (!this.state.newType || !this.state.newName || !this.state.newMonthly || !this.state.newOneTime) {
+    if (!this.state.newType || !this.state.newName) {
       this.setState({
         error: true
       })
@@ -135,8 +136,8 @@ class App extends Component {
         //  Clear values in form
         newName: '',
         newMonthly: '',
-        newOneTime: '',
-        newType: ''
+        newOneTime: 0,
+        newType: 0
       })
     }
   }
@@ -182,6 +183,7 @@ class App extends Component {
         <form className="addExpenseOrRevenueForm" onSubmit={this.handleAdd}>
           <Row className="input-field">
             <Col sm={2} smOffset={1} className="input-field">
+              <ControlLabel>Type of Amount</ControlLabel>
               <FormControl
                 componentClass="select"
                 onChange = {this.handleTypeChange}
@@ -193,29 +195,33 @@ class App extends Component {
               </FormControl>
             </Col>
             <Col sm={3} className="input-field">
+              <ControlLabel>Name</ControlLabel>
               <FormControl
                 type="text"
-                placeholder="Name"
+                placeholder="E.g., Technology Expenses"
                 onChange = {this.handleNameChange}
                 value={this.state.newName ? this.state.newName : ''}
               />
             </Col>
             <Col sm={2} className="input-field">
+              <ControlLabel>One-Time</ControlLabel>
               <FormControl
                 type="number"
-                placeholder="One-Time"
                 onChange = {this.handleOneTimeChange}
                 step="0.01"
-                value={this.state.newOneTime ? this.state.newOneTime : ''}
+                min="0"
+                value={this.state.newOneTime ? this.state.newOneTime : 0}
               />
             </Col>
             <Col sm={2} className="input-field">
+              <ControlLabel>Monthly</ControlLabel>
               <FormControl
                 type="number"
                 placeholder="Monthly"
                 onChange = {this.handleMonthlyChange}
                 step="0.01"
-                value={this.state.newMonthly ? this.state.newMonthly : ''}
+                min="0"
+                value={this.state.newMonthly ? this.state.newMonthly : 0}
               />
             </Col>
             <Col sm={1} className="add-form-button">
